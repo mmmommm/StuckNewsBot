@@ -15,6 +15,7 @@ import (
 
 func main() {
     api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
+
     http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
         verifier, err := slack.NewSecretsVerifier(r.Header, os.Getenv("SLACK_SIGNING_SECRET"))
         if err != nil {
@@ -23,7 +24,7 @@ func main() {
             return
         }
         bodyReader := io.TeeReader(r.Body, &verifier)
-        body, err := ioutil.ReadAll(r.Body)
+        body, err := ioutil.ReadAll(bodyReader)
         if err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusInternalServerError)
@@ -69,8 +70,14 @@ func main() {
 
                 command := message[1]
                 switch command {
-                case "ping":
-                    if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("pong", false)); err != nil {
+                    case "ping":
+                        if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("pong", false)); err != nil {
+                            log.Println(err)
+                            w.WriteHeader(http.StatusInternalServerError)
+                            return
+                        }
+                    case "news":
+                    if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("ニュースだよ", false)); err != nil {
                         log.Println(err)
                         w.WriteHeader(http.StatusInternalServerError)
                         return
