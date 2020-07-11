@@ -1,4 +1,4 @@
-package scaraping
+package scraping
 
 import (
 	"github.com/PuerkitoBio/goquery"
@@ -7,7 +7,7 @@ import (
 
 var href string
 
-func Scaraping() (href string){
+func Scraping() (href string){
 	url := "https://kabutan.jp/"
 	doc, err := goquery.NewDocument(url)
 	if err != nil {

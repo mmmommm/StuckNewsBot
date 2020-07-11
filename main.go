@@ -9,7 +9,7 @@ import (
 	"os"
     "strings"
     
-    scarping "github.com/mmmommm/stucknews/scarping"
+    "github.com/mmmommm/stucknews/scraping"
 
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
@@ -81,7 +81,8 @@ func main() {
                         }
                     //newsって打ったら返信でURLが送られてくる
                     case "news":
-                        _, lead := scarping.Scarping()
+                        //leadにhref（url）をいれる
+                        lead := scraping.Scraping()
                         if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(lead, false)); err != nil {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
