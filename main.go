@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
+    "strings"
+    
+    scarping "github.com/mmmommm/stucknews/scarping"
 
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
@@ -70,18 +72,26 @@ func main() {
 
                 command := message[1]
                 switch command {
+                    //テスト
                     case "ping":
                         if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("pong", false)); err != nil {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
                             return
                         }
+                    //newsって打ったら返信でURLが送られてくる
                     case "news":
-                    if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("ニュースだよ", false)); err != nil {
-                        log.Println(err)
-                        w.WriteHeader(http.StatusInternalServerError)
-                        return
-                    }
+                        _, lead := scarping.Scarping()
+                        if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(lead, false)); err != nil {
+                            log.Println(err)
+                            w.WriteHeader(http.StatusInternalServerError)
+                            return
+                        }
+                        // if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("ニュースだよ", false)); err != nil {
+                        //     log.Println(err)
+                        //     w.WriteHeader(http.StatusInternalServerError)
+                        //     return
+                        // }
                 }
             }
         }
