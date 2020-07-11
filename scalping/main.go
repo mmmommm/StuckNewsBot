@@ -10,7 +10,7 @@ import (
 func main() {
 	doc, err := goquery.NewDocument("https://kabutan.jp/")
 	if err != nil {
-		fmt.Print("url scrapping failed")
+		fmt.Print("url scalping failed")
 	}
 	res, err := doc.Find(".acrank_top_news1").Html()
 	if err != nil {
