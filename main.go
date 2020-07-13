@@ -84,12 +84,14 @@ func main() {
                     //newsって打ったら返信でURLが送られてくる
                     case "news":
                         //linkにurlをいれる
-                        link := scraping()
-                        fmt.Println(link)
-                        if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(link, false)); err != nil {
+                        links := scraping()
+                        for _, url := range links {
+                            link := string(url)
+                            if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(link, false)); err != nil {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
                             return
+                        }
                         }
                 }
             }
@@ -100,14 +102,16 @@ func main() {
         log.Fatal(err)
     }
 }
-func scraping() (link string) {
+func scraping() (links []string) {
 	url := "https://kabutan.jp"
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		fmt.Print("url scraping failed")
-	}
-    selection := doc.Find("table.visited1 > tbody > tr > td > a")
-    lead, _ := selection.Attr("href")
-    link = (url + lead)
-    return link
+    }
+    doc.Find("div.acrank_top_news1 > table.visited1 > tbody > tr > td > a").Each(func(_ int, s *goquery.Selection) {
+        lead, _ := s.Attr("href")
+        link := (url + lead)
+        links = append(links, link)
+    })
+    return links
 }
