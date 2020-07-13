@@ -2,15 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-    "strings"
-    
-    "github.com/mmmommm/stucknews/scraping"
+	"strings"
 
+	// "github.com/mmmommm/stucknews/scraping"
+
+	"github.com/PuerkitoBio/goquery"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -81,18 +83,14 @@ func main() {
                         }
                     //newsって打ったら返信でURLが送られてくる
                     case "news":
-                        //leadにhref（url）をいれる
-                        lead := scraping.Scraping()
-                        if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(lead, false)); err != nil {
+                        //linkにurlをいれる
+                        link := scraping()
+                        fmt.Println(link)
+                        if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(link, false)); err != nil {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
                             return
                         }
-                        // if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText("ニュースだよ", false)); err != nil {
-                        //     log.Println(err)
-                        //     w.WriteHeader(http.StatusInternalServerError)
-                        //     return
-                        // }
                 }
             }
         }
@@ -101,4 +99,15 @@ func main() {
     if err := http.ListenAndServe(":8080", nil); err != nil {
         log.Fatal(err)
     }
+}
+func scraping() (link string) {
+	url := "https://kabutan.jp"
+	doc, err := goquery.NewDocument(url)
+	if err != nil {
+		fmt.Print("url scraping failed")
+	}
+    selection := doc.Find("table.visited1 > tbody > tr > td > a")
+    lead, _ := selection.Attr("href")
+    link = (url + lead)
+    return link
 }
