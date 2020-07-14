@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+    copy()
     api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
 
     http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
@@ -87,6 +88,7 @@ func main() {
                         links := scraping()
                         for _, url := range links {
                             link := string(url)
+                            fmt.Print(link)
                             if _, _, err := api.PostMessage(event.Channel, slack.MsgOptionText(link, false)); err != nil {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
@@ -102,16 +104,44 @@ func main() {
         log.Fatal(err)
     }
 }
+
+func copy() {
+    url := "https://kabutan.jp/info/accessranking/2_1"
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ioutil.WriteFile("./data/index.html", body, 0666)
+}
+
 func scraping() (links []string) {
-	url := "https://kabutan.jp"
+    mainurl := "https://kabutan.jp"
+    url := "https://kabutan.jp/info/accessranking/2_1"
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		fmt.Print("url scraping failed")
     }
-    doc.Find("div.acrank_top_news1 > table.visited1 > tbody > tr > td > a").Each(func(_ int, s *goquery.Selection) {
-        lead, _ := s.Attr("href")
-        link := (url + lead)
-        links = append(links, link)
+    doc.Find("table.s_news_list tbody tr td a").Each(func(i int, s *goquery.Selection) {
+        if i < 11 {
+            lead, _ := s.Attr("href")
+            link := (mainurl+ lead)
+            links = append(links, link)
+        }
     })
+
     return links
+}
+
+func search() {
+    fileInfos, _ := ioutil.ReadFile("HTMLのファイルパス")
+    stringReader := strings.NewReader(string(fileInfos))
+    _, err := goquery.NewDocumentFromReader(stringReader)
+    if err != nil {
+        panic(err)
+    }
 }
