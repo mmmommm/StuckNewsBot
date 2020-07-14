@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/mmmommm/stucknews/copy"
+	"github.com/mmmommm/stucknews/scraping"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -66,7 +66,7 @@ func main() {
             case slackevents.CallbackEvent:
             innerEvent := eventsAPIEvent.InnerEvent
             switch event := innerEvent.Data.(type) {
-            case *slackevents.AppMentionEvent:
+                case *slackevents.AppMentionEvent:
                 message := strings.Split(event.Text, " ")
                 if len(message) < 2 {
                     w.WriteHeader(http.StatusBadRequest)
@@ -85,7 +85,7 @@ func main() {
                     //newsって打ったら返信でURLが送られてくる
                     case "news":
                         //linkにurlをいれる
-                        links := search()
+                        links := scraping.Scraping()
                         for _, url := range links {
                             link := string(url)
                             fmt.Print(link)
@@ -105,20 +105,20 @@ func main() {
     }
 }
 
-func search() (links []string){
-    url := "https://kabutan.jp"
-    fileInfos, _ := ioutil.ReadFile("./data/index.html")
-    stringReader := strings.NewReader(string(fileInfos))
-    doc, err := goquery.NewDocumentFromReader(stringReader)
-    if err != nil {
-        log.Fatal(err)
-    }
-    doc.Find("table.s_news_list tbody tr td a").Each(func(i int, s *goquery.Selection) {
-        if i < 11 {
-            lead, _ := s.Attr("href")
-            link := (url+ lead)
-            links = append(links, link)
-        }
-    })
-    return links
-}
+// func search() (links []string){
+//     url := "https://kabutan.jp"
+//     fileInfos, _ := ioutil.ReadFile("./data/index.html")
+//     stringReader := strings.NewReader(string(fileInfos))
+//     doc, err := goquery.NewDocumentFromReader(stringReader)
+//     if err != nil {
+//         log.Fatal(err)
+//     }
+//     doc.Find("table.s_news_list tbody tr td a").Each(func(i int, s *goquery.Selection) {
+//         if i < 11 {
+//             lead, _ := s.Attr("href")
+//             link := (url+ lead)
+//             links = append(links, link)
+//         }
+//     })
+//     return links
+// }
