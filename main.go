@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	// "github.com/mmmommm/stucknews/scraping"
+	"github.com/mmmommm/stucknews/copy"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/slack-go/slack"
@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-    copy()
+    copy.Copy()
     api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
 
     http.HandleFunc("/slack/events", func(w http.ResponseWriter, r *http.Request) {
@@ -104,38 +104,6 @@ func main() {
         log.Fatal(err)
     }
 }
-
-func copy() {
-    url := "https://kabutan.jp/info/accessranking/2_1"
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	ioutil.WriteFile("./data/index.html", body, 0666)
-}
-
-// func scraping() (links []string) {
-//     mainurl := "https://kabutan.jp"
-//     url := "https://kabutan.jp/info/accessranking/2_1"
-// 	doc, err := goquery.NewDocument(url)
-// 	if err != nil {
-// 		fmt.Print("url scraping failed")
-//     }
-//     doc.Find("table.s_news_list tbody tr td a").Each(func(i int, s *goquery.Selection) {
-//         if i < 11 {
-//             lead, _ := s.Attr("href")
-//             link := (mainurl+ lead)
-//             links = append(links, link)
-//         }
-//     })
-
-//     return links
-// }
 
 func search() (links []string){
     url := "https://kabutan.jp"
