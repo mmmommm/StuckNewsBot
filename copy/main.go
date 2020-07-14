@@ -1,4 +1,4 @@
-package main
+package copy
 
 import (
 	"io/ioutil"
@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func copy() {
-	url := ""
+func Copy() {
+	url := "https://kabutan.jp/info/accessranking/2_1"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -17,5 +17,5 @@ func copy() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ioutil.WriteFile("/data/index.html", body, 0666)
+	ioutil.WriteFile("./data/index.html", body, 0666)
 }
