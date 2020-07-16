@@ -86,6 +86,7 @@ func main() {
                     case "news":
                         //linkにurlをいれる
                         links := scraping.Scraping()
+                        defer os.Remove("./data/index.html")
                         for _, url := range links {
                             link := string(url)
                             fmt.Print(link)
@@ -93,7 +94,7 @@ func main() {
                             log.Println(err)
                             w.WriteHeader(http.StatusInternalServerError)
                             return
-                        }
+                            }
                         }
                 }
             }
