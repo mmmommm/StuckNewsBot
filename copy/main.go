@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func Copy() {
@@ -18,4 +19,5 @@ func Copy() {
 		log.Fatal(err)
 	}
 	ioutil.WriteFile("./data/index.html", body, 0666)
+	defer os.Remove("./data/index.htmll")
 }
