@@ -18,7 +18,7 @@ func Scraping() (links []string){
     if err != nil {
         log.Fatal(err)
     }
-doc.Find("table.s_news_list tbody tr td a").Each(func(_ int, s *goquery.Selection) {
+    doc.Find("table.s_news_list tbody tr td a").Each(func(_ int, s *goquery.Selection) {
         lead, _ := s.Attr("href")
         link := (url+ lead)
         links = append(links, link)
