@@ -35,20 +35,17 @@ func main() {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
-
         if err := verifier.Ensure(); err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusBadRequest)
             return
         }
-
         eventsAPIEvent, err := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
         if err != nil {
             log.Println(err)
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
-
         switch eventsAPIEvent.Type {
             case slackevents.URLVerification:
                 var res *slackevents.ChallengeResponse
