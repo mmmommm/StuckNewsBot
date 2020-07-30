@@ -1,7 +1,3 @@
 runtime: go113
 
-handlers:
-- url: /slack/events
-  script:
-
 service: stucknews
