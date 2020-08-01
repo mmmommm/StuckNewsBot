@@ -1,5 +1,5 @@
 cron:
 - description: "毎晩7時に実行"
-  url: "events/slack"
+  url: "slack/events"
   timezone: Asia/Tokyo
   schedule: every day 19:00
