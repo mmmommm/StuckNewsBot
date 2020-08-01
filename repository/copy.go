@@ -1,4 +1,4 @@
-package copy
+package repository
 
 import (
 	"io/ioutil"

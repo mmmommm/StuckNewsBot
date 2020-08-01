@@ -1,4 +1,4 @@
-package scraping
+package repository
 
 import (
 	"io/ioutil"
