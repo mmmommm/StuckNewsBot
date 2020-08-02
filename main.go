@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"os"
 
-	// "github.com/go-delve/delve/service/api"
-	"github.com/mmmommm/stucknews/repository"
+    "github.com/mmmommm/stucknews/repository"
+    //slackのままimportするとslack-goのpkgと被ってしまうので名前を他のに変更する
 	slackdata "github.com/mmmommm/stucknews/slack"
 
 	"github.com/slack-go/slack"
@@ -64,17 +64,15 @@ func main() {
     repository.Copy()
     http.HandleFunc("/slack/events", Handler)
     
-    text := slackdata.CreateData()
+    postMessage := slackdata.Createdata()
     channel := "bot開発"
-
-    jsonStr := `{"channel":"` + channel + `","text":"` + text + `"}`
-
+    jsonStr := `{"channel":"` + channel + `","text":"` + postMessage + `"}`
+    //http://crossbridge-lab.hatenablog.com/entry/2017/04/26/000310を参考に実装
     req, err := http.NewRequest(
         "POST",
         "https://hooks.slack.com/services/",
         bytes.NewBuffer([]byte(jsonStr)),
     )
-
     if err != nil {
         fmt.Print(err)
     }
