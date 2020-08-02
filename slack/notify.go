@@ -1,18 +1,19 @@
 package slack
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/mmmommm/stucknews/repository"
 )
 
-type SlackRepository interface {
-	Post(path string, msg []*Post) error
-}
+// type SlackRepository interface {
+// 	Post(path string, msg []*Post) error
+// }
 
-type slackImpl struct {
-}
+// type slackImpl struct {
+// }
 
 // func NewSlackRepository() SlackRepository {
 // 	return &slackImpl{}
@@ -25,31 +26,29 @@ type Post struct {
 	Link string `json:"link"`
 }
 
-type notifyImpl struct {
-}
-
-	// post := []*Post{}
-	// line := n.createData("今日のカブタンnews", "#4286f4", link)
-	// post = append(post, line)
-
 //repositoty/scraping.goからlinksをとってくる
-var links = repository.Scraping()
-func (n *notifyImpl) CreateData(title string, color string, links []string) *Post {
+func Createdata() string{
 	text := []string{}
+	links := repository.Scraping()
 	//linksをforで回してlinkに入れる
 	for i, link := range links {
 		//10件までしか取れないようにする
 		if i >= 10 {
 			break
 		}
-		//[1]　newsのURLのような形にする
+		//"[1]　newsのURL" のような形にする
 		text = append(text, fmt.Sprintf("[%d] <%s>", i+1, link))
 	}
 	post := &Post {
-		Title: title,
-		Color: color,
+		Title: "今日のカブタンnews",
+		Color: "#4286f4",
 		Link: strings.Join(text, "\n"),
 	}
-	return post
+	//main.goにstring型で渡さないといけないので
+	//*Post型を[]byte型に
+	msg, _ := json.Marshal(post)
+	//[]byte型をstring型に
+	strmsg := string(msg)
+	return strmsg
 }
 //このpostの中身をslackで送信したい
