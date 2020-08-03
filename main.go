@@ -68,9 +68,10 @@ func main() {
     channel := "bot開発"
     jsonStr := `{"channel":"` + channel + `","text":"` + postMessage + `"}`
     //http://crossbridge-lab.hatenablog.com/entry/2017/04/26/000310を参考に実装
+    url := os.Getenv("SLACK_CHANNEL")
     req, err := http.NewRequest(
         "POST",
-        "https://hooks.slack.com/services/",
+        url,
         bytes.NewBuffer([]byte(jsonStr)),
     )
     if err != nil {
