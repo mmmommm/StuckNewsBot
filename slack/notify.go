@@ -3,7 +3,6 @@ package slack
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/mmmommm/stucknews/repository"
 )
@@ -20,11 +19,6 @@ import (
 // }
 
 //slackに投稿する中身
-type Post struct {
-	Title string `json:"title"`
-	Color string `json:"color"`
-	Link string `json:"link"`
-}
 
 //repositoty/scraping.goからlinksをとってくる
 func Createdata() string{
@@ -39,16 +33,13 @@ func Createdata() string{
 		//"[1]　newsのURL" のような形にする
 		text = append(text, fmt.Sprintf("[%d] <%s>", i+1, link))
 	}
-	post := &Post {
-		Title: "今日のカブタンnews",
-		Color: "#4286f4",
-		Link: strings.Join(text, "\n"),
-	}
+	msg, _ := json.Marshal(text)
+	strmsg := string(msg)
 	//main.goにstring型で渡さないといけないので
 	//*Post型を[]byte型に
-	msg, _ := json.Marshal(post)
+	// msg, _ := json.Marshal(post)
 	//[]byte型をstring型に
-	strmsg := string(msg)
+	// strmsg := string(msg)
 	return strmsg
 }
 //このpostの中身をslackで送信したい
