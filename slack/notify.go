@@ -31,7 +31,7 @@ func Createdata() string{
 			break
 		}
 		//"[1]　newsのURL" のような形にする
-		text = append(text, fmt.Sprintf("[%d] <%s>", i+1, link))
+		text = append(text, fmt.Sprintf("<%s>", link))
 	}
 	msg, _ := json.Marshal(text)
 	strmsg := string(msg)

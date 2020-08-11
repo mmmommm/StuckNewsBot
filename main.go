@@ -1,66 +1,68 @@
-package main;
+package main
 
 import (
-    "bytes"
+	"encoding/json"
+	"log"
+	"net/http"
+	"net/url"
+    "os"
+    "io/ioutil"
     "fmt"
-    "net/http"
+
 	"github.com/mmmommm/stucknews/repository"
+
 	//slackのままimportするとslack-goのpkgと被ってしまうので名前を他のに変更する
 	slackdata "github.com/mmmommm/stucknews/slack"
-
 	// "github.com/slack-go/slack"
 	// "github.com/slack-go/slack/slackevents"
 )
-// type Post struct {
-// 	Title string `json:"title"`
-// 	Color string `json:"color"`
-// 	Link string `json:"link"`
-// }
+type Payload struct {
+    Text string `json:"text"`
+    Attachments []Attachment `json:"attachments"`
+}
+
+type Attachment struct {
+    Color string `json:"color"`
+    TitleLink string `json:"title_link"`
+}
 
 func main() {
     // api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
     repository.Copy();
     urlData := slackdata.Createdata()
-    // //http://crossbridge-lab.hatenablog.com/entry/2017/04/26/000310を参考に実装
-    //channelIDを取得して変数urlに入れる
-    //channel := os.Getenv("SLACK_CHANNEL")
-    // post := []*Post{}
-    // post = append(post, &Post{
-	// 	Title: "今日のカブタンnews",
-	// 	Color: "#4286f4",
-	// 	Link: strings.Join(urlData, "\n"),
-    // })
 
-    // if _, _, err := api.PostMessage(channel, slack.MsgOptionText(post, false)); err != nil {
-    //     log.Println(err)
-    //     return
-    // }
+    //webhookのurlを渡してある
+    webhookurl := os.Getenv("WEBHOOK")
 
-    jsonStr := `{"text":"連絡事項です！！！！",
-                    "attachments":[
-                        "color":"#4286f4",
-                        "pretext":"今日のカブタンニュース",
-                        "title_link":"` + urlData + `"
-                    ]
-                }`
-    
-    req, err := http.NewRequest(
-        "POST",
-        "WEBHOOK",
-        bytes.NewBuffer([]byte(jsonStr)),
+    attachment := Attachment {
+        "#FFC0CB",
+        urlData,
+    }
+    payload := Payload {
+        "今日のニュースだよ！！！！！！",
+        []Attachment{attachment},
+    }
+    //payloadをjsonの形に
+    params, err := json.Marshal(payload)
+    if err != nil {
+        log.Println(err)
+        return
+    }
+
+    res, err := http.PostForm(
+        webhookurl,
+        url.Values{"payload": {string(params)}},
     )
+
     if err != nil {
-        fmt.Print(err)
+        log.Println(err)
+        return
     }
-
-    req.Header.Set("Content-Type", "application/json")
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
+    body, err := ioutil.ReadAll(res.Body)
     if err != nil {
-        fmt.Print(err)
+        log.Println(err)
+        return
     }
-
-    fmt.Print(resp)
-    defer resp.Body.Close()
-}
+    defer res.Body.Close()
+    log.Println(string(body))
+};
