@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,7 +23,7 @@ type Payload struct {
 
 type Attachment struct {
 	Color     string `json:"color"`
-	TitleLink string `json:"title_link"`
+	Title string `json:"title"`
 }
 
 func main() {
