@@ -46,7 +46,7 @@ func main() {
     
     req, err := http.NewRequest(
         "POST",
-        "https://hooks.slack.com/services/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",
+        "WEBHOOK",
         bytes.NewBuffer([]byte(jsonStr)),
     )
     if err != nil {
