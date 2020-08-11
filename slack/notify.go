@@ -21,7 +21,7 @@ import (
 //slackに投稿する中身
 
 //repositoty/scraping.goからlinksをとってくる
-func Createdata() string{
+func Createdata() string {
 	text := []string{}
 	links := repository.Scraping()
 	//linksをforで回してlinkに入れる
@@ -42,4 +42,5 @@ func Createdata() string{
 	// strmsg := string(msg)
 	return strmsg
 }
+
 //このpostの中身をslackで送信したい
