@@ -1,8 +1,9 @@
 package slack
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/mmmommm/stucknews/repository"
 )
@@ -31,16 +32,17 @@ func Createdata() string {
 			break
 		}
 		//"[1]　newsのURL" のような形にする
-		text = append(text, fmt.Sprintf("<%s>", link))
+		text = append(text, fmt.Sprintf("[%d] <%s>", i+1, link))
 	}
-	msg, _ := json.Marshal(text)
-	strmsg := string(msg)
+	slackpost := strings.Join(text, "\n")
+	// msg, _ := json.Marshal(text)
+	// strmsg := string(msg)
 	//main.goにstring型で渡さないといけないので
 	//*Post型を[]byte型に
 	// msg, _ := json.Marshal(post)
 	//[]byte型をstring型に
 	// strmsg := string(msg)
-	return strmsg
+	return slackpost
 }
 
 //このpostの中身をslackで送信したい
