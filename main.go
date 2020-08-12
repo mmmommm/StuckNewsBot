@@ -26,8 +26,7 @@ type Attachment struct {
 	Title string `json:"title"`
 }
 
-func main() {
-	// api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
+func handler(w http.ResponseWriter, r *http.Request) {
 	repository.Copy()
 	urlData := slackdata.Createdata()
 
@@ -53,11 +52,11 @@ func main() {
 		webhookurl,
 		url.Values{"payload": {string(params)}},
 	)
-
 	if err != nil {
-		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Println(err)
@@ -65,4 +64,9 @@ func main() {
 	}
 	defer res.Body.Close()
 	log.Println(string(body))
+}
+
+func main() {
+	http.HandleFunc("/postmsg", handler)
+	http.ListenAndServe(":8080", nil)
 }
