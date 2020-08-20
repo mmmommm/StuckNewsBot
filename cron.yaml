@@ -1,5 +1,5 @@
 cron:
 - description: "毎晩7時に実行"
-  url: "https://stucknews.an.r.appspot.com/postmsg"
+  url: "/postmsg"
   timezone: Asia/Tokyo
   schedule: every day 19:00
