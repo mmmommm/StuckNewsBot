@@ -7,18 +7,6 @@ import (
 
 	"github.com/mmmommm/stucknews/repository"
 )
-
-// type SlackRepository interface {
-// 	Post(path string, msg []*Post) error
-// }
-
-// type slackImpl struct {
-// }
-
-// func NewSlackRepository() SlackRepository {
-// 	return &slackImpl{}
-// }
-
 //slackに投稿する中身
 
 //repositoty/scraping.goからlinksをとってくる
@@ -35,13 +23,6 @@ func Createdata() string {
 		text = append(text, fmt.Sprintf("[%d] <%s>", i+1, link))
 	}
 	slackpost := strings.Join(text, "\n")
-	// msg, _ := json.Marshal(text)
-	// strmsg := string(msg)
-	//main.goにstring型で渡さないといけないので
-	//*Post型を[]byte型に
-	// msg, _ := json.Marshal(post)
-	//[]byte型をstring型に
-	// strmsg := string(msg)
 	return slackpost
 }
 
